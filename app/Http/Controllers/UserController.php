@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $data = User::orderBy('judul','asc')->get();
+        $data = User::orderBy('user','asc')->get();
         return response()->json([
             'status' => true,
             'message' => 'Data ditemukan',
