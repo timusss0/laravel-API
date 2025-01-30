@@ -4,16 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $data = User::orderBy('user','asc')->get();
+        $data = User::orderBy('name','asc')->get();
         return response()->json([
             'status' => true,
             'message' => 'Data ditemukan',
             'data' => $data
         ],200);
     }
+
+    public function store(Request $request)
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'age' => 'required|integer|min:0'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            Log::error('Validation failed', $validator->errors()->toArray());
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()
+            ], 400);
+        }
+        
+
+        $dataUser = new User;
+        $dataUser->name = $request->name;
+        $dataUser->email = $request->email;
+        $dataUser->age = $request->age;
+
+        $post = $dataUser->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data User berhasil disimpan',
+            'data' => $dataUser
+        ],201);
+    }
+
 }
