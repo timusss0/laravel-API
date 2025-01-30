@@ -107,4 +107,21 @@ class UserController extends Controller
     ], 200);
 }
 
+public function destroy(string $id)
+{
+    $dataUser = User::find($id);
+    if(empty($dataUser)){
+        return response()->json([
+            'status' => false,
+            'message' => 'Data tidak ditemukan'
+        ],404);
+    }
+
+    $post = $dataUser->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'sukses berhasil hapus data',
+    ]);
+}
 }
