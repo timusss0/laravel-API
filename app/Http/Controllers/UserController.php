@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'age' => 'required|integer|min:0'
         ];
 
@@ -50,6 +50,8 @@ class UserController extends Controller
             'data' => $dataUser
         ],201);
     }
+
+
     public function show(string $id)
     {
         $data=User::find($id);      
@@ -67,5 +69,42 @@ class UserController extends Controller
             ],404);
         }
     }
+
+    public function update(Request $request, string $id)
+    {
+
+        $dataUser = User::find($id);
+        if(empty($dataUser)){
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ],404);
+        }
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' =>'required|string|email|max:255|unique:users,email',
+            'age' => 'required|integer|min:0'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()
+            ],400);
+        }
+
+    $dataUser->name = $request->name;
+    $dataUser->email = $request->email;
+    $dataUser->age = $request->age;
+
+    $dataUser->save(); 
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Sukses berhasil update data',
+        'data' => $dataUser
+    ], 200);
+}
 
 }
