@@ -21,34 +21,18 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'age' => 'required|integer|min:0'
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            Log::error('Validation failed', $validator->errors()->toArray());
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors()
-            ], 400);
-        }
-        
-
         $dataUser = new User;
         $dataUser->name = $request->name;
         $dataUser->email = $request->email;
         $dataUser->age = $request->age;
-
-        $post = $dataUser->save();
-
+    
+        $dataUser->save();
+    
         return response()->json([
             'status' => true,
-            'message' => 'Data User berhasil disimpan',
+            'message' => 'Sukses menambahkan data',
             'data' => $dataUser
-        ],201);
+        ], 201);
     }
 
 
