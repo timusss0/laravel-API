@@ -50,5 +50,22 @@ class UserController extends Controller
             'data' => $dataUser
         ],201);
     }
+    public function show(string $id)
+    {
+        $data=User::find($id);      
+        if($data){
+            return response()->json([
+                'status'=>true,
+                'message'=>'Data ditemukan',
+                'data'=>$data
+            ],200);
+        }else{
+            return response()->json([
+                'status'=>false,
+                'message'=>'Data tidak ditemukan',
+                'data'=>null
+            ],404);
+        }
+    }
 
 }
